@@ -1,0 +1,1 @@
+let () = Decalcable.Cli.main ()
