@@ -1,1 +1,1 @@
-let () = Decalcable.Cli.main ()
+let () = Decalcable.Cli.repl ()
