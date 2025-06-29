@@ -11,6 +11,8 @@ let rec eval env = function
   | Definition (x, e) -> let v = eval env e in 
                         env := (x, v)::!env; v
 
+let info = Cmdliner.Cmd.info "decalque"
+
 let eval_lb lb =
   try
     let expr = Parser.main Lexer.token lb in
@@ -25,3 +27,16 @@ let repl () =
     let lb = Lexing.from_channel Stdlib.stdin in
     eval_lb lb
   done
+
+let term =
+  let open Cmdliner.Term.Syntax in
+  let+ expr_opt =
+    let open Cmdliner.Arg in
+    value & opt (some string) None & info [ "e" ]
+  in
+  match expr_opt with
+  | Some s -> eval_lb (Lexing.from_string s)
+  | None -> repl ()
+
+let cmd = Cmdliner.Cmd.v info term
+let main () = Cmdliner.Cmd.eval cmd |> Stdlib.exit
